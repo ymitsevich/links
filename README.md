@@ -1,6 +1,6 @@
-#Link Compressor
+# Link Compressor
 
-###Running
+### Running
 
 - `export UID=${UID}`
 - `export GID=${GID}`
