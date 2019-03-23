@@ -1,0 +1,28 @@
+server {
+    listen 80;
+
+    root %TRAVIS_BUILD_DIR%/public;
+    index index.php;
+
+    server_name links-dev;
+    client_max_body_size 300M;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location /views {
+        expires epoch;
+    }
+
+    sendfile off;
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;
+#        fastcgi_param APP_ENV local;
+        fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_read_timeout 36000;
+    }
+
+}
