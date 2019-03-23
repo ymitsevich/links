@@ -50,10 +50,10 @@ return [
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
+            'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
-            'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
@@ -68,9 +68,9 @@ return [
             'password' => env('DB_TESTING_PASSWORD', 'testing'),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
+            'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'prefix'    => '',
             'strict'    => false,
-            'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
