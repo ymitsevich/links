@@ -11,6 +11,6 @@
 |
 */
 
-Route::resource('links', 'LinkController');
+Route::resource('links', 'LinkController')->middleware('auth');;
 
 Auth::routes();

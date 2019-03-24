@@ -5,6 +5,7 @@ namespace App\Links\Services;
 use App\Links\CompressedLinkInterface;
 use App\Links\Exceptions\LinkNotFound;
 use App\Links\Exceptions\ValidationError;
+use App\UserInterface;
 use Illuminate\Support\Collection;
 
 interface CompressedLinkServiceInterface
@@ -40,6 +41,8 @@ interface CompressedLinkServiceInterface
      * @throws LinkNotFound
      */
     public function delete(int $id): bool;
+
+    public function setUser(UserInterface $user) : CompressedLinkServiceInterface;
 
     public function assertValid(CompressedLinkInterface $compressedLink);
 

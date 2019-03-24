@@ -4,7 +4,7 @@ namespace App\Links\Repositories;
 
 use App\Links\CompressedLinkInterface;
 use App\Links\Exceptions\ErrorSavingModel;
-use App\User;
+use App\UserInterface;
 
 class CompressedLinkRepository extends BaseRepository implements CompressedLinkRepositoryInterface
 {
@@ -14,7 +14,7 @@ class CompressedLinkRepository extends BaseRepository implements CompressedLinkR
     protected $model;
 
     /**
-     * @var User
+     * @var UserInterface
      */
     protected $user;
 

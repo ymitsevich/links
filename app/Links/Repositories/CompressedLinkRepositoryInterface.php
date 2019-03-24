@@ -3,7 +3,7 @@
 namespace App\Links\Repositories;
 
 use App\Links\CompressedLinkInterface;
-use App\User;
+use App\UserInterface;
 
 interface CompressedLinkRepositoryInterface
 {
@@ -15,5 +15,5 @@ interface CompressedLinkRepositoryInterface
 
     public function find(int $id);
 
-    public function setUser(User $user);
+    public function setUser(UserInterface $user);
 }

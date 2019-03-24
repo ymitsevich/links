@@ -32,7 +32,7 @@ class LoginTest extends TestCase
     {
         $user = factory(User::class)->make();
         $response = $this->actingAs($user)->get('/login');
-        $response->assertRedirect('/home');
+        $response->assertRedirect('/links');
     }
 
 
@@ -45,7 +45,7 @@ class LoginTest extends TestCase
             'email' => $user->email,
             'password' => $password,
         ]);
-        $response->assertRedirect('/home');
+        $response->assertRedirect('/links');
         $this->assertAuthenticatedAs($user);
     }
 
@@ -81,7 +81,7 @@ class LoginTest extends TestCase
             'remember' => 'on',
         ]);
 
-        $response->assertRedirect('/home');
+        $response->assertRedirect('/links');
         // cookie assertion goes here
         $this->assertAuthenticatedAs($user);
     }

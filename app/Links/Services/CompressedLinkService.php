@@ -3,6 +3,7 @@
 namespace App\Links\Services;
 
 use App\Links\Exceptions\ValidationError;
+use App\UserInterface;
 use Illuminate\Support\Facades\Validator;
 use App\Links\CompressedLinkInterface;
 use App\Links\Exceptions\LinkNotFound;
@@ -13,6 +14,11 @@ use Illuminate\Support\Collection;
 
 class CompressedLinkService implements CompressedLinkServiceInterface
 {
+
+    /**
+     * @var UserInterface
+     */
+    protected $user;
 
     /**
      * @var CompressedLinkRepositoryInterface
@@ -29,7 +35,7 @@ class CompressedLinkService implements CompressedLinkServiceInterface
         CompressedLinkFactoryInterface $modelFactory
     )
     {
-        $this->repository = $repository->setUser(auth()->user());
+        $this->repository = $repository;
         $this->modelFactory = $modelFactory;
     }
 
@@ -121,5 +127,12 @@ class CompressedLinkService implements CompressedLinkServiceInterface
         if (!$validator->passes()) {
             throw new ValidationError((string)$validator->getMessageBag());
         }
+    }
+
+    public function setUser(UserInterface $user): CompressedLinkServiceInterface
+    {
+        $this->user = $user;
+        $this->repository->setUser($user);
+        return $this;
     }
 }

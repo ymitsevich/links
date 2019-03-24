@@ -24,14 +24,14 @@ class LinkController extends Controller
 
     public function index()
     {
-        $links = $this->service->getAll();
+        $links = $this->service->setUser(auth()->user())->getAll();
         return LinkResource::collection($links);
     }
 
     public function show(int $id)
     {
         try {
-            $link = $this->service->get($id);
+            $link = $this->service->setUser(auth()->user())->get($id);
         } catch (LinkNotFound $e) {
             return response(['status' => 'error', 'data' => 'Requested model not found'], Response::HTTP_NOT_FOUND);
         }
@@ -43,7 +43,7 @@ class LinkController extends Controller
     public function store(Request $request)
     {
         try {
-            $link = $this->service->store($request->all());
+            $link = $this->service->setUser(auth()->user())->store($request->all());
         } catch (ValidationError $e) {
             return response(['status' => 'error', 'data' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
@@ -54,7 +54,7 @@ class LinkController extends Controller
     public function update(Request $request, int $id)
     {
         try {
-            $link = $this->service->update($id, $request->all());
+            $link = $this->service->setUser(auth()->user())->update($id, $request->all());
         } catch (ValidationError $e) {
             return response(['status' => 'error', 'data' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
@@ -65,7 +65,7 @@ class LinkController extends Controller
     public function destroy(int $id)
     {
         try {
-            $this->service->delete($id);
+            $this->service->setUser(auth()->user())->delete($id);
         } catch (LinkNotFound $e) {
             return response(['status' => 'error', 'data' => 'Requested model not found'], Response::HTTP_NOT_FOUND);
         }
