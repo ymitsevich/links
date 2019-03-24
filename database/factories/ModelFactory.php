@@ -24,3 +24,9 @@ $factory->define(User::class, function (Faker $faker) {
         'remember_token' => Str::random(10),
     ];
 });
+
+$factory->define(\App\Links\CompressedLink::class, function (Faker $faker) {
+    return [
+        'link' => $faker->word,
+    ];
+});

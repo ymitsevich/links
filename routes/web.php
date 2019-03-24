@@ -12,3 +12,5 @@
 */
 
 Route::resource('links', 'LinkController');
+
+Auth::routes();
