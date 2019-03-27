@@ -3,15 +3,16 @@
 namespace Tests\Unit\CompressedLink;
 
 use App\Links\CompressedLinkInterface;
-use App\Links\Exceptions\LinkNotFound;
-use App\Links\Exceptions\ValidationError;
-use App\Links\Services\CompressedLinkServiceInterface;
+use App\Links\Exceptions\ErrorSavingModel;
+use App\Links\Factories\CompressedLinkFactoryInterface;
+use App\Links\Repositories\CompressedLinkRepositoryInterface;
 use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 
-class CompressedLinkServiceTest extends TestCase
+class CompressedLinkRepositoryTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -28,23 +29,29 @@ class CompressedLinkServiceTest extends TestCase
     private $wrongUser;
 
     /**
-     * @var CompressedLinkServiceInterface
+     * @var CompressedLinkRepositoryInterface
      */
-    private $linkService;
+    private $linkRepo;
 
     /**
      * @var Collection
      */
     private $links;
 
+    /**
+     * @var CompressedLinkFactoryInterface
+     */
+    private $linkFactory;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->linkService = app(CompressedLinkServiceInterface::class);
+        $this->linkRepo = app(CompressedLinkRepositoryInterface::class);
+        $this->linkFactory = app(CompressedLinkFactoryInterface::class);
         $this->user = factory(User::class)->create();
         $this->wrongUser = factory(User::class)->create();
         $this->actingAs($this->user);
-        $this->linkService->setUser($this->user);
+
         $this->initLinks();
     }
 
@@ -56,14 +63,14 @@ class CompressedLinkServiceTest extends TestCase
     public function testGet()
     {
         $assertedModel = $this->links->first();
-        $result = $this->linkService->get($assertedModel->id);
+        $result = $this->linkRepo->find($assertedModel->id);
         $this->assertEquals($result->link, $assertedModel->link);
         $this->assertTrue($result instanceof CompressedLinkInterface);
     }
 
     public function testGetAll()
     {
-        $result = $this->linkService->getAll();
+        $result = $this->linkRepo->all();
         $this->assertCount(self::LINKS_COUNT, $result);
         $this->assertTrue($result->first() instanceof CompressedLinkInterface);
 
@@ -73,14 +80,14 @@ class CompressedLinkServiceTest extends TestCase
     {
         $deletedModel = $this->links->first();
 
-        $result = $this->linkService->delete($deletedModel->id);
+        $result = $this->linkRepo->delete($deletedModel->id);
         $this->assertTrue($result);
 
-        $result = $this->linkService->getAll();
+        $result = $this->linkRepo->all();
         $this->assertCount(self::LINKS_COUNT - 1, $result);
 
-        $this->expectException(LinkNotFound::class);
-        $this->linkService->get($deletedModel->id);
+        $this->expectException(ModelNotFoundException::class);
+        $this->linkRepo->find($deletedModel->id);
     }
 
     public function testUpdate()
@@ -88,55 +95,59 @@ class CompressedLinkServiceTest extends TestCase
         $newValue = 'http://newlink';
         $assertedModel = $this->links->first();
 
-        $result = $this->linkService->update($assertedModel->id, ['link' => $newValue]);
+        $compressedLink = $this->linkRepo->find($assertedModel->id);
+        $compressedLink->fill(['link' => $newValue]);
+        $result = $this->linkRepo->save($compressedLink);
+
         $this->assertTrue($result instanceof CompressedLinkInterface);
 
-        $result = $this->linkService->get($assertedModel->id);
+        $result = $this->linkRepo->find($assertedModel->id);
         $this->assertEquals($result->link, $newValue);
     }
 
     public function testWrongGet()
     {
         $assertedModel = $this->links->first();
-        $this->expectException(LinkNotFound::class);
-        $this->linkService->get($assertedModel->id + 1000);
+        $this->expectException(ModelNotFoundException::class);
+        $this->linkRepo->find($assertedModel->id + 1000);
     }
 
     public function testWrongDelete()
     {
         $deletedModel = $this->links->first();
-        $this->expectException(LinkNotFound::class);
-        $this->linkService->delete($deletedModel->id + 1000);
+        $this->expectException(ModelNotFoundException::class);
+        $this->linkRepo->delete($deletedModel->id + 1000);
     }
 
     public function testWrongIdUpdate()
     {
         $newValue = 'http://newlink';
         $assertedModel = $this->links->first();
-        $this->expectException(LinkNotFound::class);
-        $this->linkService->update($assertedModel->id + 1000, ['link' => $newValue]);
+        $this->expectException(ModelNotFoundException::class);
+        $compressedLink = $this->linkRepo->find($assertedModel->id + 1000);
+        $compressedLink->fill(['link' => $newValue]);
+        $this->linkRepo->save($compressedLink);
     }
 
     public function testWrongPayloadUpdate()
     {
         $newValue = 'http://newlink';
         $assertedModel = $this->links->first();
-        $this->expectException(ValidationError::class);
-        $this->linkService->update($assertedModel->id, ['link' => str_repeat($newValue, 1000)]);
-    }
+        $this->expectException(ErrorSavingModel::class);
 
-    public function testWrongUser()
-    {
-        $assertedModel = $this->links->first();
-        $this->expectException(LinkNotFound::class);
-        $this->linkService->setUser($this->wrongUser)->get($assertedModel->id);
+        $compressedLink = $this->linkRepo->find($assertedModel->id);
+        $compressedLink->fill(['link' => str_repeat($newValue, 1000)]);
+        $this->linkRepo->save($compressedLink);
     }
 
     private function initLinks()
     {
         $this->links = collect();
         for ($i = 0; $i < self::LINKS_COUNT; ++$i) {
-            $this->links->push($this->linkService->store(['link' => "http://testlink{$i}"]));
+            $linkModel = $this->linkFactory->make(['link' => "http://testlink{$i}"]);
+            $linkModel->user()->associate($this->user);
+            $this->links->push($this->linkRepo->save($linkModel));
         }
     }
 }
+
