@@ -3,6 +3,7 @@
 namespace App\Links\Services;
 
 use App\Links\Exceptions\ErrorGeneratingHash;
+use App\Links\Exceptions\ErrorSavingLink;
 use App\Links\Exceptions\ErrorSavingModel;
 use App\Links\Exceptions\InvalidCompressingLink;
 use App\Links\Exceptions\ValidationError;
@@ -80,33 +81,59 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     /**
      * @param array $attributes
      * @return CompressedLinkInterface
+     * @throws ErrorSavingLink
+     * @throws InvalidCompressingLink
      * @throws ValidationError
      */
     public function store(array $attributes): CompressedLinkInterface
     {
-        /** @var CompressedLinkInterface $compressedLink */
-        $compressedLink = $this->modelFactory->make($attributes);
+        try {
+            $compressedLink = $this->modelFactory->make($attributes);
+        } catch (WrongFactoryAttributes $e) {
+            throw new InvalidCompressingLink();
+        }
+
         $this->assertValid($compressedLink);
         $compressedLink->user()->associate($this->user);
-        return $this->repository->save($compressedLink);
+
+        try {
+            $result = $this->repository->save($compressedLink);
+        } catch (ErrorSavingModel $e) {
+            throw new ErrorSavingLink();
+
+        }
+
+        return $result;
     }
 
     /**
      * @param int $id
      * @param array $attributes
      * @return CompressedLinkInterface
+     * @throws ErrorSavingLink
      * @throws LinkNotFound
      * @throws ValidationError
      */
     public function update(int $id, array $attributes): CompressedLinkInterface
     {
-        $compressedLink = $this->repository->find($id);
-        if (!$compressedLink) {
+        try {
+            $compressedLink = $this->repository->find($id);
+        } catch (ModelNotFoundException $e) {
             throw new LinkNotFound();
+
         }
+
         $compressedLink->fill($attributes);
         $this->assertValid($compressedLink);
-        return $this->repository->save($compressedLink);
+
+        try {
+            $result = $this->repository->save($compressedLink);
+        } catch (ErrorSavingModel $e) {
+            throw new ErrorSavingLink();
+
+        }
+
+        return $result;
     }
 
     /**
@@ -172,7 +199,9 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     /**
      * @param string $fullLink
      * @return string
+     * @throws ErrorGeneratingHash
      * @throws InvalidCompressingLink
+     * @throws ValidationError
      */
     public function buildCompressed(string $fullLink): string
     {

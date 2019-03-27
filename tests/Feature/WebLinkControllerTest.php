@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
-class WebLinksControllerTest extends TestCase
+class WebLinkControllerTest extends TestCase
 {
     use DatabaseTransactions;
 

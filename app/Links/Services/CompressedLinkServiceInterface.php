@@ -3,6 +3,7 @@
 namespace App\Links\Services;
 
 use App\Links\CompressedLinkInterface;
+use App\Links\Exceptions\ErrorSavingLink;
 use App\Links\Exceptions\InvalidCompressingLink;
 use App\Links\Exceptions\LinkNotFound;
 use App\Links\Exceptions\ValidationError;
@@ -24,6 +25,8 @@ interface CompressedLinkServiceInterface
     /**
      * @param array $attributes
      * @return CompressedLinkInterface
+     * @throws ErrorSavingLink
+     * @throws InvalidCompressingLink
      * @throws ValidationError
      */
     public function store(array $attributes): CompressedLinkInterface;
@@ -31,8 +34,10 @@ interface CompressedLinkServiceInterface
     /**
      * @param int $id
      * @param array $attributes
-     * @throws ValidationError
      * @return CompressedLinkInterface
+     * @throws ErrorSavingLink
+     * @throws LinkNotFound
+     * @throws ValidationError
      */
     public function update(int $id, array $attributes): CompressedLinkInterface;
 

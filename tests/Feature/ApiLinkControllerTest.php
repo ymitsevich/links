@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 
-class ApiLinksControllerTest extends TestCase
+class ApiLinkControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
