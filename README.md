@@ -4,7 +4,7 @@
 
 ### Running
 
-- `export UID=${UID} && docker-compose up -d`
+- `export UID=${UID} & docker-compose up -d`
 - `docker-compose exec php php artisan migrate`
 
 ### Testing

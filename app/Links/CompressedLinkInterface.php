@@ -13,5 +13,7 @@ interface CompressedLinkInterface
 
     public function getRules(): array;
 
+    public function getKey();
+
 
 }
