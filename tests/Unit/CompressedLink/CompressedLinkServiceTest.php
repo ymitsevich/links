@@ -125,6 +125,13 @@ class CompressedLinkServiceTest extends TestCase
         $this->linkService->update($assertedModel->id, ['link' => str_repeat($newValue, 1000)]);
     }
 
+    public function testWrongUser()
+    {
+        $assertedModel = $this->links->first();
+        $this->expectException(LinkNotFound::class);
+        $this->linkService->setUser($this->wrongUser)->get($assertedModel->id);
+    }
+    
     private function initLinks()
     {
         $this->links = collect();
