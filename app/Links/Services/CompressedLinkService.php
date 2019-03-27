@@ -2,7 +2,12 @@
 
 namespace App\Links\Services;
 
+use App\Links\Exceptions\ErrorGeneratingHash;
+use App\Links\Exceptions\ErrorSavingModel;
+use App\Links\Exceptions\InvalidCompressingLink;
 use App\Links\Exceptions\ValidationError;
+use App\Links\Exceptions\WrongFactoryAttributes;
+use App\Links\Generators\LinkHashGenerator;
 use App\UserInterface;
 use Illuminate\Support\Facades\Validator;
 use App\Links\CompressedLinkInterface;
@@ -30,13 +35,20 @@ class CompressedLinkService implements CompressedLinkServiceInterface
      */
     private $modelFactory;
 
+    /**
+     * @var LinkHashGenerator
+     */
+    private $hashGenerator;
+
     public function __construct(
         CompressedLinkRepositoryInterface $repository,
-        CompressedLinkFactoryInterface $modelFactory
+        CompressedLinkFactoryInterface $modelFactory,
+        LinkHashGenerator $hashGenerator
     )
     {
         $this->repository = $repository;
         $this->modelFactory = $modelFactory;
+        $this->hashGenerator = $hashGenerator;
     }
 
     public function getAll(): Collection
@@ -75,7 +87,7 @@ class CompressedLinkService implements CompressedLinkServiceInterface
         /** @var CompressedLinkInterface $compressedLink */
         $compressedLink = $this->modelFactory->make($attributes);
         $this->assertValid($compressedLink);
-        $compressedLink->user()->associate(auth()->user());
+        $compressedLink->user()->associate($this->user);
         return $this->repository->save($compressedLink);
     }
 
@@ -135,4 +147,53 @@ class CompressedLinkService implements CompressedLinkServiceInterface
         $this->repository->setUser($user);
         return $this;
     }
+
+    /**
+     * @param string $hash
+     * @return string
+     * @throws LinkNotFound
+     */
+    public function convertToFull(string $hash): string
+    {
+        try {
+            $id = $this->hashGenerator->getNumberByHash($hash);
+            $linkModel = $this->repository->find($id);
+        } catch (ModelNotFoundException|ErrorGeneratingHash $e) {
+            throw new LinkNotFound();
+        }
+
+        if (!$linkModel) {
+            throw new LinkNotFound();
+        }
+
+        return $linkModel->link;
+    }
+
+    /**
+     * @param string $fullLink
+     * @return string
+     * @throws InvalidCompressingLink
+     */
+    public function buildCompressed(string $fullLink): string
+    {
+        try {
+            $compressedLink = $this->modelFactory->make(['link' => $fullLink]);
+            $compressedLink->user()->associate($this->user);
+            $this->assertValid($compressedLink);
+            $this->repository->save($compressedLink);
+        } catch (WrongFactoryAttributes|ErrorSavingModel $e) {
+            throw new InvalidCompressingLink();
+        }
+
+        $hash = $this->hashGenerator->getHashByNumber($compressedLink->getKey());
+
+        return $this->buildCompressedUrl($hash);
+
+    }
+
+    private function buildCompressedUrl(string $hash): string
+    {
+        return config('compressor.domain') . '/' . $hash;
+    }
+
 }

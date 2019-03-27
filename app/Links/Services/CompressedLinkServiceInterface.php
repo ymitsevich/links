@@ -3,6 +3,7 @@
 namespace App\Links\Services;
 
 use App\Links\CompressedLinkInterface;
+use App\Links\Exceptions\InvalidCompressingLink;
 use App\Links\Exceptions\LinkNotFound;
 use App\Links\Exceptions\ValidationError;
 use App\UserInterface;
@@ -45,5 +46,19 @@ interface CompressedLinkServiceInterface
     public function setUser(UserInterface $user) : CompressedLinkServiceInterface;
 
     public function assertValid(CompressedLinkInterface $compressedLink);
+
+    /**
+     * @param string $hash
+     * @return string
+     * @throws LinkNotFound
+     */
+    public function convertToFull(string $hash): string;
+
+    /**
+     * @param string $fullLink
+     * @return string
+     * @throws InvalidCompressingLink
+     */
+    public function buildCompressed(string $fullLink): string;
 
 }

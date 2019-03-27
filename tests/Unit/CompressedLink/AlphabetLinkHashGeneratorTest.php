@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\CompressedLink\Generators;
+namespace Tests\Unit\CompressedLink;
 
 use App\Links\Exceptions\ErrorGeneratingHash;
 use App\Links\Generators\AlphabetLinkHashGenerator;

@@ -9,7 +9,7 @@ use App\Links\Services\CompressedLinkServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class LinkController extends Controller
+class ApiLinkController extends Controller
 {
 
     /**
@@ -72,4 +72,5 @@ class LinkController extends Controller
 
         return response([], Response::HTTP_OK);
     }
+
 }

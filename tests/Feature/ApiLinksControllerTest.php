@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\CompressedLink;
+namespace Tests\Feature;
 
 use App\Links\CompressedLink;
 use App\User;
@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 
-class LinksControllerTest extends TestCase
+class ApiLinksControllerTest extends TestCase
 {
     use DatabaseTransactions;
 

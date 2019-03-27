@@ -11,6 +11,6 @@
 |
 */
 
-Route::resource('links', 'LinkController')->middleware('auth');;
-
+Route::resource('links', 'ApiLinkController')->middleware('auth');;
+Route::get('r/{hash}', 'WebLinkController@process');
 Auth::routes();

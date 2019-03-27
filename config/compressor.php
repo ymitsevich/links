@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'domain' => env('COMPRESSOR_DOMAIN', 'http://localhost')
+    'domain' => env('COMPRESSOR_DOMAIN', 'http://localhost/r')
 ];

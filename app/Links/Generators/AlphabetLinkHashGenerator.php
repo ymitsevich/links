@@ -16,7 +16,7 @@ class AlphabetLinkHashGenerator implements LinkHashGenerator
     /**
      * @param int $delta
      * @return string
-     * @throws \Exception
+     * @throws ErrorGeneratingHash
      */
     public function getHashByNumber(int $delta): string
     {
