@@ -3,7 +3,7 @@
 namespace App\Links\Compressors;
 
 use App\Links\Exceptions\ErrorSavingModel;
-use App\Links\Exceptions\InvalidCompressingLinkException;
+use App\Links\Exceptions\InvalidCompressingLink;
 use App\Links\Exceptions\WrongFactoryAttributes;
 use App\Links\Generators\LinkHashGenerator;
 use App\Links\Repositories\CompressedLinkRepository;
@@ -45,7 +45,7 @@ class AlphabetLinkCompressor implements LinkCompressor
     /**
      * @param string $fullLink
      * @return string
-     * @throws InvalidCompressingLinkException
+     * @throws InvalidCompressingLink
      */
     public function build(string $fullLink): string
     {
@@ -53,7 +53,7 @@ class AlphabetLinkCompressor implements LinkCompressor
             $compressedLink = $this->compressedLinkFactory->make(['link' => $fullLink]);
             $this->compressedLinkRepository->save($compressedLink);
         } catch (WrongFactoryAttributes|ErrorSavingModel $e) {
-            throw new InvalidCompressingLinkException();
+            throw new InvalidCompressingLink();
         }
 
         $hash = $this->hashGenerator->getHashByNumber($compressedLink->getKey());

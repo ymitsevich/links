@@ -2,6 +2,8 @@
 
 namespace App\Links\Generators;
 
+use App\Links\Exceptions\ErrorGeneratingHash;
+
 /**
  * Class AlphabetLinkHashGenerator
  * @package App\Links\Generators
@@ -21,7 +23,7 @@ class AlphabetLinkHashGenerator implements LinkHashGenerator
         $alphabetLength = strlen(self::ALPHABET);
         $newHashPositions = $this->base10ToAnyConvert($delta, $alphabetLength);
         if (count($newHashPositions) > self::SIZE) {
-            throw new \Exception('Too big number for current amount of digits and alphabet');
+            throw new ErrorGeneratingHash('Too big number for current amount of digits and alphabet');
         }
 
         $newHashPositions = array_merge(
@@ -40,6 +42,7 @@ class AlphabetLinkHashGenerator implements LinkHashGenerator
     /**
      * @param string $hash
      * @return int
+     * @throws ErrorGeneratingHash
      */
     public function getNumberByHash(string $hash): int
     {
@@ -51,7 +54,9 @@ class AlphabetLinkHashGenerator implements LinkHashGenerator
             $curPos = strpos(self::ALPHABET, $curChar);
             $number += $curPos * ($alphabetLength ** ($hashLen - $i));
         }
-
+        if (!is_int($number)) {
+            throw new ErrorGeneratingHash('Too big hash');
+        }
         return $number;
     }
 
