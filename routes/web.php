@@ -11,5 +11,3 @@
 |
 */
 Route::get('r/{hash}', 'WebLinkController@process');
-
-Auth::routes();
