@@ -10,7 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::resource('links', 'ApiLinkController')->middleware('auth');;
 Route::get('r/{hash}', 'WebLinkController@process');
+
 Auth::routes();

@@ -29,7 +29,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: links
   composer:
-    image: composer:1.7.2
+    image: composer
     volumes:
       - ".:/app"
     command: install

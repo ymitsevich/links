@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\LinkResource;
 use App\Links\Exceptions\LinkNotFound;
 use App\Links\Exceptions\ValidationError;
@@ -9,7 +10,7 @@ use App\Links\Services\CompressedLinkServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class ApiLinkController extends Controller
+class LinkController extends Controller
 {
 
     /**

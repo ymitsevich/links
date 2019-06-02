@@ -17,7 +17,7 @@ class CreateCompressedLinksTable extends Migration
             $table->collation = 'utf8_bin';
             $table->charset = 'utf8';
             $table->increments('id');
-            $table->bigInteger('user_id')->unsigned();;
+            $table->integer('user_id')->unsigned();;
             $table->string('link', 2000);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
