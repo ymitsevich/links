@@ -10,6 +10,7 @@ use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class CompressedLinkRepositoryTest extends TestCase
@@ -131,13 +132,12 @@ class CompressedLinkRepositoryTest extends TestCase
 
     public function testWrongPayloadUpdate()
     {
-        $newValue = 'http://newlink';
         $assertedModel = $this->links->first();
-        $this->expectException(ErrorSavingModel::class);
-
         $compressedLink = $this->linkRepo->find($assertedModel->id);
-        $compressedLink->fill(['link' => str_repeat($newValue, 1000)]);
+        $compressedLink->fill(['link' => Str::random(10000)]);
+//        $this->expectException(ErrorSavingModel::class);
         $this->linkRepo->save($compressedLink);
+        dump(\DB::table('compressed_links')->get());
     }
 
     private function initLinks()

@@ -35,6 +35,7 @@ before_script:
   - sudo apt-get install -q libnss3-dev libxi6 libgconf-2-4
   - cp .env.travis .env
   - cp phpunit.travis.xml phpunit.xml
+  - mysql -e "set global sql_mode='STRICT_TRANS_TABLES';"
   - mysql -e 'create database testing;'
   - sudo cp travis-nginx-conf /etc/nginx/sites-available/$SITE_DOMAIN
   - sudo sed -i 's/^;opcache.interned_strings_buffer=8.*/opcache.interned_strings_buffer=8/' /etc/php/7.3/fpm/php.ini
@@ -81,6 +82,7 @@ before_script:
   - php artisan key:generate
   - php artisan migrate
   - php artisan db:seed
+  - mysql -e "SHOW VARIABLES LIKE 'sql_mode';"
 
 script:
   - vendor/bin/phpunit
