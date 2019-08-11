@@ -23,6 +23,13 @@ install:
 
 before_script:
   - sudo sed -i "2i127.0.1.1 links-dev links-dev.test m.links-dev s.links-dev m.links-dev.test s.links-dev.test" /etc/hosts
+  - wget https://repo.mysql.com//mysql-apt-config_0.8.12-1_all.deb
+  - sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
+  - sudo apt-get update -q
+  - sudo apt-get install -q -y --allow-unauthenticated -o Dpkg::Options::=--force-confnew mysql-server
+  - sudo systemctl restart mysql
+  - sudo mysql_upgrade
+  - mysql --version
   - sudo apt-get install -q php7.3-mysql
   - sudo apt-get install -q php7.3-xml
   - sudo apt-get install -q php7.3-json
@@ -82,8 +89,6 @@ before_script:
   - php artisan key:generate
   - php artisan migrate
   - php artisan db:seed
-  - mysql -e "SHOW VARIABLES LIKE 'sql_mode';"
-
 script:
   - vendor/bin/phpunit
 
