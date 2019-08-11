@@ -135,7 +135,7 @@ class CompressedLinkRepositoryTest extends TestCase
         $assertedModel = $this->links->first();
         $compressedLink = $this->linkRepo->find($assertedModel->id);
         $compressedLink->fill(['link' => Str::random(10000)]);
-//        $this->expectException(ErrorSavingModel::class);
+        $this->expectException(ErrorSavingModel::class);
         $this->linkRepo->save($compressedLink);
         dump(\DB::table('compressed_links')->get());
     }

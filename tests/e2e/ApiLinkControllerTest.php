@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\e2e;
 
 use App\Links\CompressedLink;
 use App\User;
