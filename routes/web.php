@@ -10,4 +10,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Fallback route
+
+
 Route::get('r/{hash}', 'WebLinkController@process');
+
+Route::any('/{any}', function () {
+    return response(null, 404);
+});

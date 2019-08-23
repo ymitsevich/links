@@ -83,6 +83,61 @@ api_token=YGmEPivttV7n3zIlByOEjPM7NnA9emDnHM2CYGzRNxuEqt3o1rJEJaO5YTJ8
 
 ```
 
+- POST `/api/links` Create new compressed link. Body example:
+```
+{"link" : "https://google.com"}
+```
+Response example:
+```
+{
+    "data": {
+        "id": 2145,
+        "link": "https:\/\/google.com",
+        "created_at": "2019-01-23T11:11:44.000000Z",
+        "updated_at": "2019-01-23T11:11:44.000000Z",
+        "short_link": "http:\/\/localhost\/aaJV"
+    }
+}
+
+```
+- GET `/api/links/2145` Retrieve a compressed link.
+Response example:
+```
+{
+    "data": {
+        "id": 2145,
+        "link": "https:\/\/google1.com",
+        "created_at": "2019-01-23T11:11:44.000000Z",
+        "updated_at": "2019-01-23T11:11:44.000000Z",
+        "short_link": "http:\/\/localhost\/aaJV"
+    }
+}
+
+```
+
+- PUT `/api/links/2145` Update a compressed link. Body example:
+```
+{"link" : "https://google2.com"}
+```
+Response example:
+```
+{
+    "data": {
+        "id": 2145,
+        "link": "https:\/\/google2.com",
+        "created_at": "2019-01-23T11:11:44.000000Z",
+        "updated_at": "2019-01-23T11:11:44.000000Z",
+        "short_link": "http:\/\/localhost\/aaJV"
+    }
+}
+```
+
+- DELETE `/api/links/2145` Destroy a compressed link.
+Response example: 
+```
+[] 
+```
+
 ### Todo
 1. Laravel Passport (oauth)
 2. Security:

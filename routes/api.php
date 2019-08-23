@@ -15,3 +15,6 @@ Route::resource('links', 'Api\LinkController')->middleware('auth:api');
 Route::post('register', 'Auth\RegisterController@register');
 Route::post('auth', 'Auth\LoginController@login');
 
+Route::any('/{any}', function () {
+    return response(null, 404);
+});
