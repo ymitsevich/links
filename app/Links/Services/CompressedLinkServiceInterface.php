@@ -2,12 +2,12 @@
 
 namespace App\Links\Services;
 
-use App\Links\CompressedLinkInterface;
+use App\Links\CompressedLink;
 use App\Links\Exceptions\ErrorSavingLink;
 use App\Links\Exceptions\InvalidCompressingLink;
 use App\Links\Exceptions\LinkNotFound;
 use App\Links\Exceptions\ValidationError;
-use App\UserInterface;
+use App\User;
 use Illuminate\Support\Collection;
 
 interface CompressedLinkServiceInterface
@@ -17,29 +17,29 @@ interface CompressedLinkServiceInterface
 
     /**
      * @param int $id
-     * @return CompressedLinkInterface
+     * @return CompressedLink
      * @throws LinkNotFound
      */
-    public function get(int $id): CompressedLinkInterface;
+    public function get(int $id): CompressedLink;
 
     /**
      * @param array $attributes
-     * @return CompressedLinkInterface
+     * @return CompressedLink
      * @throws ErrorSavingLink
      * @throws InvalidCompressingLink
      * @throws ValidationError
      */
-    public function store(array $attributes): CompressedLinkInterface;
+    public function store(array $attributes): CompressedLink;
 
     /**
      * @param int $id
      * @param array $attributes
-     * @return CompressedLinkInterface
+     * @return CompressedLink
      * @throws ErrorSavingLink
      * @throws LinkNotFound
      * @throws ValidationError
      */
-    public function update(int $id, array $attributes): CompressedLinkInterface;
+    public function update(int $id, array $attributes): CompressedLink;
 
     /**
      * @param int $id
@@ -48,9 +48,9 @@ interface CompressedLinkServiceInterface
      */
     public function delete(int $id): bool;
 
-    public function setUser(UserInterface $user) : CompressedLinkServiceInterface;
+    public function setUser(User $user) : CompressedLinkServiceInterface;
 
-    public function assertValid(CompressedLinkInterface $compressedLink);
+    public function assertValid(CompressedLink $compressedLink);
 
     /**
      * @param string $hash

@@ -6,7 +6,7 @@ namespace App\Links;
 use App\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CompressedLink extends BaseModel implements CompressedLinkInterface
+class CompressedLink extends BaseModel
 {
 
     protected $fillable = ['link'];

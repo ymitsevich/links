@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\CompressedLink;
 
-use App\Links\CompressedLinkInterface;
+use App\Links\CompressedLink;
 use App\Links\Exceptions\ErrorSavingModel;
 use App\Links\Factories\CompressedLinkFactoryInterface;
 use App\Links\Repositories\CompressedLinkRepositoryInterface;
@@ -66,14 +66,14 @@ class CompressedLinkRepositoryTest extends TestCase
         $assertedModel = $this->links->first();
         $result = $this->linkRepo->find($assertedModel->id);
         $this->assertEquals($result->link, $assertedModel->link);
-        $this->assertTrue($result instanceof CompressedLinkInterface);
+        $this->assertTrue($result instanceof CompressedLink);
     }
 
     public function testGetAll()
     {
         $result = $this->linkRepo->all();
         $this->assertCount(self::LINKS_COUNT, $result);
-        $this->assertTrue($result->first() instanceof CompressedLinkInterface);
+        $this->assertTrue($result->first() instanceof CompressedLink);
 
     }
 
@@ -100,7 +100,7 @@ class CompressedLinkRepositoryTest extends TestCase
         $compressedLink->fill(['link' => $newValue]);
         $result = $this->linkRepo->save($compressedLink);
 
-        $this->assertTrue($result instanceof CompressedLinkInterface);
+        $this->assertTrue($result instanceof CompressedLink);
 
         $result = $this->linkRepo->find($assertedModel->id);
         $this->assertEquals($result->link, $newValue);

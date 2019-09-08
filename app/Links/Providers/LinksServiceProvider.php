@@ -2,10 +2,6 @@
 
 namespace App\Links\Providers;
 
-use App\Links\CompressedLink;
-use App\Links\CompressedLinkInterface;
-use App\Links\Compressors\AlphabetLinkCompressor;
-use App\Links\Compressors\LinkCompressor;
 use App\Links\Factories\CompressedLinkFactory;
 use App\Links\Factories\CompressedLinkFactoryInterface;
 use App\Links\Generators\AlphabetLinkHashGenerator;
@@ -27,10 +23,8 @@ class LinksServiceProvider extends ServiceProvider
     {
         $this->app->bind(CompressedLinkServiceInterface::class, CompressedLinkService::class);
         $this->app->bind(CompressedLinkRepositoryInterface::class, CompressedLinkRepository::class);
-        $this->app->bind(CompressedLinkInterface::class, CompressedLink::class);
         $this->app->bind(CompressedLinkFactoryInterface::class, CompressedLinkFactory::class);
         $this->app->bind(LinkHashGenerator::class, AlphabetLinkHashGenerator::class);
-        $this->app->bind(LinkCompressor::class, AlphabetLinkCompressor::class);
     }
 
     /**

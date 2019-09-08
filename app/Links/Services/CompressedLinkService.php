@@ -9,9 +9,9 @@ use App\Links\Exceptions\InvalidCompressingLink;
 use App\Links\Exceptions\ValidationError;
 use App\Links\Exceptions\WrongFactoryAttributes;
 use App\Links\Generators\LinkHashGenerator;
-use App\UserInterface;
+use App\User;
 use Illuminate\Support\Facades\Validator;
-use App\Links\CompressedLinkInterface;
+use App\Links\CompressedLink;
 use App\Links\Exceptions\LinkNotFound;
 use App\Links\Factories\CompressedLinkFactoryInterface;
 use App\Links\Repositories\CompressedLinkRepositoryInterface;
@@ -22,7 +22,7 @@ class CompressedLinkService implements CompressedLinkServiceInterface
 {
 
     /**
-     * @var UserInterface
+     * @var User
      */
     protected $user;
 
@@ -60,10 +60,10 @@ class CompressedLinkService implements CompressedLinkServiceInterface
 
     /**
      * @param int $id
-     * @return CompressedLinkInterface
+     * @return CompressedLink
      * @throws LinkNotFound
      */
-    public function get(int $id): CompressedLinkInterface
+    public function get(int $id): CompressedLink
     {
         try {
             $result = $this->repository->find($id);
@@ -80,12 +80,12 @@ class CompressedLinkService implements CompressedLinkServiceInterface
 
     /**
      * @param array $attributes
-     * @return CompressedLinkInterface
+     * @return CompressedLink
      * @throws ErrorSavingLink
      * @throws InvalidCompressingLink
      * @throws ValidationError
      */
-    public function store(array $attributes): CompressedLinkInterface
+    public function store(array $attributes): CompressedLink
     {
         try {
             $compressedLink = $this->modelFactory->make($attributes);
@@ -109,12 +109,12 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     /**
      * @param int $id
      * @param array $attributes
-     * @return CompressedLinkInterface
+     * @return CompressedLink
      * @throws ErrorSavingLink
      * @throws LinkNotFound
      * @throws ValidationError
      */
-    public function update(int $id, array $attributes): CompressedLinkInterface
+    public function update(int $id, array $attributes): CompressedLink
     {
         try {
             $compressedLink = $this->repository->find($id);
@@ -157,10 +157,10 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     }
 
     /**
-     * @param CompressedLinkInterface $compressedLink
+     * @param CompressedLink $compressedLink
      * @throws ValidationError
      */
-    public function assertValid(CompressedLinkInterface $compressedLink)
+    public function assertValid(CompressedLink $compressedLink)
     {
         $validator = Validator::make($compressedLink->getAttributes(), $compressedLink->getRules());
         if (!$validator->passes()) {
@@ -168,7 +168,7 @@ class CompressedLinkService implements CompressedLinkServiceInterface
         }
     }
 
-    public function setUser(UserInterface $user): CompressedLinkServiceInterface
+    public function setUser(User $user): CompressedLinkServiceInterface
     {
         $this->user = $user;
         $this->repository->setUser($user);

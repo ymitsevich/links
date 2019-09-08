@@ -2,24 +2,24 @@
 
 namespace App\Links\Repositories;
 
-use App\Links\CompressedLinkInterface;
+use App\Links\CompressedLink;
 use App\Links\Exceptions\ErrorSavingModel;
-use App\UserInterface;
+use App\User;
 
 interface CompressedLinkRepositoryInterface
 {
     public function all();
 
     /**
-     * @param CompressedLinkInterface $compressedLink
-     * @return CompressedLinkInterface
+     * @param CompressedLink $compressedLink
+     * @return CompressedLink
      * @throws ErrorSavingModel
      */
-    public function save(CompressedLinkInterface $data): CompressedLinkInterface;
+    public function save(CompressedLink $compressedLink): CompressedLink;
 
     public function delete(int $id);
 
     public function find(int $id);
 
-    public function setUser(UserInterface $user);
+    public function setUser(User $user);
 }

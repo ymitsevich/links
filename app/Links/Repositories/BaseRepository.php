@@ -2,7 +2,7 @@
 
 namespace App\Links\Repositories;
 
-use App\UserInterface;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseRepository
@@ -13,7 +13,7 @@ abstract class BaseRepository
     protected $model;
 
     /**
-     * @var UserInterface
+     * @var User
      */
     protected $user;
 
@@ -29,7 +29,7 @@ abstract class BaseRepository
 
     }
 
-    public function setUser(UserInterface $user): BaseRepository
+    public function setUser(User $user): BaseRepository
     {
         $this->user = $user;
         return $this;

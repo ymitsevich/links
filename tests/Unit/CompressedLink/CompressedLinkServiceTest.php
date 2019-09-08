@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\CompressedLink;
 
-use App\Links\CompressedLinkInterface;
+use App\Links\CompressedLink;
 use App\Links\Exceptions\LinkNotFound;
 use App\Links\Exceptions\ValidationError;
 use App\Links\Services\CompressedLinkServiceInterface;
@@ -58,14 +58,14 @@ class CompressedLinkServiceTest extends TestCase
         $assertedModel = $this->links->first();
         $result = $this->linkService->get($assertedModel->id);
         $this->assertEquals($result->link, $assertedModel->link);
-        $this->assertTrue($result instanceof CompressedLinkInterface);
+        $this->assertTrue($result instanceof CompressedLink);
     }
 
     public function testGetAll()
     {
         $result = $this->linkService->getAll();
         $this->assertCount(self::LINKS_COUNT, $result);
-        $this->assertTrue($result->first() instanceof CompressedLinkInterface);
+        $this->assertTrue($result->first() instanceof CompressedLink);
 
     }
 
@@ -89,7 +89,7 @@ class CompressedLinkServiceTest extends TestCase
         $assertedModel = $this->links->first();
 
         $result = $this->linkService->update($assertedModel->id, ['link' => $newValue]);
-        $this->assertTrue($result instanceof CompressedLinkInterface);
+        $this->assertTrue($result instanceof CompressedLink);
 
         $result = $this->linkService->get($assertedModel->id);
         $this->assertEquals($result->link, $newValue);

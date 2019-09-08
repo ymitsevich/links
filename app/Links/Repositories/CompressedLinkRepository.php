@@ -2,23 +2,23 @@
 
 namespace App\Links\Repositories;
 
-use App\Links\CompressedLinkInterface;
+use App\Links\CompressedLink;
 use App\Links\Exceptions\ErrorSavingModel;
-use App\UserInterface;
+use App\User;
 
 class CompressedLinkRepository extends BaseRepository implements CompressedLinkRepositoryInterface
 {
     /**
-     * @var CompressedLinkInterface
+     * @var CompressedLink
      */
     protected $model;
 
     /**
-     * @var UserInterface
+     * @var User
      */
     protected $user;
 
-    public function __construct(CompressedLinkInterface $model)
+    public function __construct(CompressedLink $model)
     {
         $this->model = $model;
     }
@@ -39,11 +39,11 @@ class CompressedLinkRepository extends BaseRepository implements CompressedLinkR
     }
 
     /**
-     * @param CompressedLinkInterface $compressedLink
-     * @return CompressedLinkInterface
+     * @param CompressedLink $compressedLink
+     * @return CompressedLink
      * @throws ErrorSavingModel
      */
-    public function save(CompressedLinkInterface $compressedLink): CompressedLinkInterface
+    public function save(CompressedLink $compressedLink): CompressedLink
     {
         try {
             $result = $compressedLink->save();

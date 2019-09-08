@@ -3,16 +3,16 @@
 namespace App\Links\Factories;
 
 
-use App\Links\CompressedLinkInterface;
+use App\Links\CompressedLink;
 use App\Links\Exceptions\WrongFactoryAttributes;
 
 interface CompressedLinkFactoryInterface
 {
     /**
      * @param array $attributes
-     * @return CompressedLinkInterface
+     * @return CompressedLink
      * @throws WrongFactoryAttributes
      */
-    public function make(array $attributes): CompressedLinkInterface;
+    public function make(array $attributes): CompressedLink;
 
 }
