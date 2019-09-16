@@ -6,8 +6,7 @@ This software provides service to convert long links like `https://facebook.com/
 - docker containers with Nginx, PHP7.3, MySql8, Composer. Handled by docker-compose. Different yml files for dev and prod.
 - exposed several endpoints (on the localhost for dev env). Description is below.
 - simple authentication with registration
-- structure with controllers->service->repositories->models
-- unit test for controllers, services, repos wrapped in TravisCI
+- unit test for controllers, services wrapped in TravisCI
 
 ### Installation & Requirements
 

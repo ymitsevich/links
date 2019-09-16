@@ -10,6 +10,7 @@ use App\Links\Exceptions\ValidationError;
 use App\Links\Exceptions\WrongFactoryAttributes;
 use App\Links\Generators\LinkHashGenerator;
 use App\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Validator;
 use App\Links\CompressedLink;
 use App\Links\Exceptions\LinkNotFound;
@@ -27,11 +28,6 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     protected $user;
 
     /**
-     * @var CompressedLinkRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * @var CompressedLinkFactoryInterface
      */
     private $modelFactory;
@@ -41,21 +37,25 @@ class CompressedLinkService implements CompressedLinkServiceInterface
      */
     private $hashGenerator;
 
+    /**
+     * @var CompressedLink
+     */
+    private $compressedLinkBuilder;
+
     public function __construct(
-        CompressedLinkRepositoryInterface $repository,
         CompressedLinkFactoryInterface $modelFactory,
-        LinkHashGenerator $hashGenerator
+        LinkHashGenerator $hashGenerator,
+        CompressedLink $compressedLink
     )
     {
-        $this->repository = $repository;
         $this->modelFactory = $modelFactory;
         $this->hashGenerator = $hashGenerator;
+        $this->compressedLinkBuilder = $compressedLink;
     }
 
     public function getAll(): Collection
     {
-        return $this->repository->all();
-
+        return $this->getBuilder()->get();
     }
 
     /**
@@ -66,16 +66,16 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     public function get(int $id): CompressedLink
     {
         try {
-            $result = $this->repository->find($id);
+            $compressedLink = $this->getBuilder()->find($id);
         } catch (ModelNotFoundException $e) {
             throw new LinkNotFound();
         }
 
-        if (!$result) {
+        if (!$compressedLink) {
             throw new LinkNotFound();
         }
 
-        return $result;
+        return $compressedLink;
     }
 
     /**
@@ -97,13 +97,13 @@ class CompressedLinkService implements CompressedLinkServiceInterface
         $compressedLink->user()->associate($this->user);
 
         try {
-            $result = $this->repository->save($compressedLink);
-        } catch (ErrorSavingModel $e) {
+            $compressedLink->save();
+        } catch (\Exception $e) {
             throw new ErrorSavingLink();
 
         }
 
-        return $result;
+        return $compressedLink;
     }
 
     /**
@@ -117,7 +117,8 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     public function update(int $id, array $attributes): CompressedLink
     {
         try {
-            $compressedLink = $this->repository->find($id);
+            /** @var CompressedLink $compressedLink */
+            $compressedLink = $this->getBuilder()->findOrFail($id);
         } catch (ModelNotFoundException $e) {
             throw new LinkNotFound();
 
@@ -127,13 +128,13 @@ class CompressedLinkService implements CompressedLinkServiceInterface
         $this->assertValid($compressedLink);
 
         try {
-            $result = $this->repository->save($compressedLink);
-        } catch (ErrorSavingModel $e) {
+            $compressedLink->save();
+        } catch (\Exception $e) {
             throw new ErrorSavingLink();
 
         }
 
-        return $result;
+        return $compressedLink;
     }
 
     /**
@@ -144,7 +145,9 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     public function delete(int $id): bool
     {
         try {
-            $result = $this->repository->delete($id);
+            /** @var CompressedLink $compressedLink */
+            $compressedLink = $this->getBuilder()->findOrFail($id);
+            $result = $compressedLink->delete();
         } catch (ModelNotFoundException $e) {
             throw new LinkNotFound();
         }
@@ -171,7 +174,7 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     public function setUser(User $user): CompressedLinkServiceInterface
     {
         $this->user = $user;
-        $this->repository->setUser($user);
+        $this->compressedLinkBuilder = $this->getBuilder()->where('user_id', $user->id);
         return $this;
     }
 
@@ -184,7 +187,8 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     {
         try {
             $id = $this->hashGenerator->getNumberByHash($hash);
-            $linkModel = $this->repository->find($id);
+            /** @var CompressedLink $compressedLink */
+            $linkModel = $this->compressedLinkBuilder->find($id);
         } catch (ModelNotFoundException|ErrorGeneratingHash $e) {
             throw new LinkNotFound();
         }
@@ -209,7 +213,7 @@ class CompressedLinkService implements CompressedLinkServiceInterface
             $compressedLink = $this->modelFactory->make(['link' => $fullLink]);
             $compressedLink->user()->associate($this->user);
             $this->assertValid($compressedLink);
-            $this->repository->save($compressedLink);
+            $compressedLink->save();
         } catch (WrongFactoryAttributes|ErrorSavingModel $e) {
             throw new InvalidCompressingLink();
         }
@@ -223,6 +227,11 @@ class CompressedLinkService implements CompressedLinkServiceInterface
     private function buildCompressedUrl(string $hash): string
     {
         return config('compressor.domain') . '/' . $hash;
+    }
+
+    public function getBuilder()
+    {
+        return clone $this->compressedLinkBuilder;
     }
 
 }
