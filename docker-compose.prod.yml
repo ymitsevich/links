@@ -9,7 +9,7 @@ services:
       - .:/links
   php:
     build: docker/php
-    user: ${UID}:${UID}
+    user: ${UID}:${UIDX}
     working_dir: /links
     restart: always
     volumes:
@@ -21,7 +21,7 @@ services:
       - ./dbdata:/var/lib/mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: Kdsg&432edfsdSDF
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: links
   composer:
     image: composer

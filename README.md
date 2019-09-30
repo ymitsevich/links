@@ -11,14 +11,13 @@ This software provides service to convert long links like `https://facebook.com/
 ### Installation & Requirements
 
 - docker
-- create .env (based on example) and fill in needed parameters
-- `export UID=${UID}` (a workaround for user mapping in docker container)
+- `export UIDX=${UID}` (a workaround for user mapping in docker container)
 - `docker-compose -f docker-compose.dev.yml up -d` (wait couple of minutes until vendors will be installed)
 - `docker-compose -f docker-compose.dev.yml exec php php artisan migrate`
 
 ### Running
 
-- `export UID=${UID}` (a workaround for user mapping in docker container)
+- `export UIDX=${UID}` (a workaround for user mapping in docker container)
 - `docker-compose -f docker-compose.dev.yml up -d`
 
 ### Testing

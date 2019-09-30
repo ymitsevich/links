@@ -9,7 +9,7 @@ services:
       - .:/links
   php:
     build: docker/php
-    user: ${UID}:${UID}
+    user: ${UID}:${UIDX}
     working_dir: /links
     environment:
       XDEBUG_CONFIG: remote_host=172.20.0.1

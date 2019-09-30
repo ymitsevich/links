@@ -59,23 +59,6 @@ return [
             ]) : [],
         ],
 
-        'testing' => [
-            'driver'    => 'mysql',
-            'port'      => '3306',
-            'host'     => env('DB_TESTING_HOST', 'links-dev'),
-            'database' => env('DB_TESTING_DATABASE', 'testing'),
-            'username' => env('DB_TESTING_USERNAME', 'testing'),
-            'password' => env('DB_TESTING_PASSWORD', 'testing'),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
-            'prefix'    => '',
-            'strict'    => false,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
-        ],
-
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', '127.0.0.1'),
